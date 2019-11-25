@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -31,8 +33,8 @@ public class FragmentB extends Fragment {
     public void displayDetails(String title, String url) {
         TextView titleText = getView().findViewById(R.id.txvTitle);
         titleText.setText(title);
-        TextView descText = getView().findViewById(R.id.txvDescription);
-        descText.setText(url);
+        ImageView imageView = getView().findViewById(R.id.bigImage);
+        Glide.with(getView()).load(url).into(imageView);
     }
 
 }

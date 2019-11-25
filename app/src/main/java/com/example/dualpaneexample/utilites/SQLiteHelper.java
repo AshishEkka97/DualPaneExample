@@ -3,11 +3,14 @@ package com.example.dualpaneexample.utilites;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.dualpaneexample.model.Item;
 
+import java.io.File;
 import java.util.List;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
@@ -44,7 +47,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addImages(List<Item> images) {
+    public void addImages(List<Item> images) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -58,15 +61,30 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 db.insert(TABLE_NAME, null, values);
             }
             db.setTransactionSuccessful();
+        } catch (SQLException e) {
+            throw e;
         } finally {
-            db.setTransactionSuccessful();
+            db.endTransaction();
         }
     }
 
     public Cursor getData(int limit, int offset) {
-       SQLiteDatabase db = this.getReadableDatabase();
-       String query = "SELECT * FROM " + TABLE_NAME + "LIMIT " + limit + " OFFSET " + offset;
+       SQLiteDatabase db = this.getWritableDatabase();
+       String query = "SELECT * FROM " + TABLE_NAME + " LIMIT " + limit + " OFFSET " + offset;
        Cursor res = db.rawQuery(query, null);
        return res;
+    }
+
+    public boolean checkDatabase() {
+        Cursor cursor = getData(10, 0);
+        if (cursor != null && cursor.getCount() > 0) return true;
+        return false;
+    }
+
+    public long numberOfRows() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        long count = DatabaseUtils.queryNumEntries(db, TABLE_NAME);
+        db.close();
+        return count;
     }
 }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dualpaneexample.R;
 import com.example.dualpaneexample.model.Item;
 
@@ -59,6 +60,7 @@ public class PaginationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case ITEM:
                 ItemViewHolder itemView = (ItemViewHolder) holder;
                 itemView.title.setText(item.getTitle());
+                Glide.with(this.context).load(item.getThumbUrl()).into(itemView.image);
                 break;
 
             case LOADING:
